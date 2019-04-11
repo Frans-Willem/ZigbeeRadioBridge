@@ -1,0 +1,12 @@
+#ifndef PROJECT_CONF_H_
+#define PROJECT_CONF_H_
+//#include "target-conf.h"
+//
+#define MODELS_CONF_CC2531_USB_STICK 1
+#define ADC_SENSOR_CONF_ON 0
+#define LPM_CONF_MODE 0
+#define UART0_CONF_HIGH_SPEED 1
+#define UART0_RTSCTS 1
+#define UART0_CONF_WITH_INPUT 1
+#define USB_SERIAL_CONF_BUFFERED 1
+#endif // PROJECT_CONF_H_
