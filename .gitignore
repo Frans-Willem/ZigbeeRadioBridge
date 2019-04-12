@@ -1,0 +1,8 @@
+obj_*
+packet_bridge.banks
+packet_bridge.map
+packet_bridge.hex
+contiki-cc2530dk.lib
+packet_bridge.mem
+packet_bridge.lk
+packet_bridge.cc2530dk
