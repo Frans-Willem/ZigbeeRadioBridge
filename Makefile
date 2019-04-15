@@ -10,6 +10,6 @@ HAVE_BANKING = 1
 
 all: $(CONTIKI_PROJECT)
 
-CONTIKI = ../contiki
+CONTIKI = ./3rdparty/contiki
 include $(CONTIKI)/Makefile.include
 
