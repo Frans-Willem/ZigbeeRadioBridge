@@ -33,7 +33,7 @@ static void commands_handle_radio_get_object(size_t request_id,
                                              const uint8_t *data,
                                              size_t data_len) {
   radio_param_t param;
-  uint8_t retval[64];
+  static uint8_t retval[64];
   size_t expected_len;
   if (data_len < 4) {
     commands_send_err(request_id, NULL, 0);
