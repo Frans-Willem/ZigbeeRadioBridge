@@ -1,6 +1,6 @@
 DEFINES += PROJECT_CONF_H=\"project-conf.h\"
-CONTIKI_PROJECT = packet_bridge
-PROJECT_SOURCEFILES += serial_protocol.c commands.c serialization.c packet_bridge_mac.c
+CONTIKI_PROJECT = radio_bridge
+PROJECT_SOURCEFILES += serial_protocol.c commands.c serialization.c radio_bridge_mac.c
 TARGET = cc2530dk
 
 CONTIKI_WITH_RIME = 1
