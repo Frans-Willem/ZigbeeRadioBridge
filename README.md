@@ -1,8 +1,8 @@
-# Zigbee Packet Bridge
+# Zigbee Radio Bridge
 
 This is an open-source bridge between the Zigbee/802.15.4 radio interface on a Texas Instruments CC2531 USB dongle and a host computer. While other solutions to communicate with Zigbee networks using this dongle exist (like TI's Zigbee Network Processor), they often attempt to do all Zigbee handling on the dongle's internal 8051 chip.
 
-Zigbee Packet Radio aims to offload as much as possible onto the computer, and have the CC2531 act as only a dumb radio slave.
+Zigbee Radio Bridge aims to offload as much as possible onto the computer, and have the CC2531 act as only a dumb radio slave.
 
 ## Getting started
 
