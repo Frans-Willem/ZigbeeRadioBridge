@@ -7,5 +7,6 @@
 #define UART0_RTSCTS 1
 #define UART0_CONF_WITH_INPUT 1
 #define USB_SERIAL_CONF_BUFFERED 1
-#define NETSTACK_CONF_MAC packet_bridge_mac_driver
+#undef NETSTACK_CONF_RDC
+#define NETSTACK_CONF_RDC packet_bridge_rdc_driver
 #endif // PROJECT_CONF_H_

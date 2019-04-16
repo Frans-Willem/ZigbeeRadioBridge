@@ -2,14 +2,14 @@
  * Copyright (c) 2019, Frans-Willem Hardijzer <fw@hardijzer.nl>
  */
 
+#include "commands.h"
 #include "contiki.h"
 #include "dev/io-arch.h"
 #include "lib/ringbuf.h"
-#include "sys/process.h"
-#include <stdbool.h>
 #include "net/netstack.h"
 #include "serial_protocol.h"
-#include "commands.h"
+#include "sys/process.h"
+#include <stdbool.h>
 
 PROCESS(packetbridge_process, "packet bridge process");
 AUTOSTART_PROCESSES(&packetbridge_process);
@@ -39,4 +39,9 @@ PROCESS_THREAD(packetbridge_process, ev, data) {
     }
   }
   PROCESS_END();
+}
+
+void netstack_init(void) {
+  NETSTACK_RADIO.init();
+  NETSTACK_RDC.init();
 }
