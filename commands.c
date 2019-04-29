@@ -64,6 +64,112 @@ static void commands_handle_radio_set_object(size_t request_id,
                                        param, &data[2], data_len - 2));
 }
 
+static int radio_check_filtering() {
+  if ((FRMFILT0 & 1) != 1)
+    return 1;
+  if ((FRMFILT1 & 0x78) != 0x78)
+    return 2;
+  if ((SRCMATCH & 1) != 1)
+    return 3;
+  if ((SRCMATCH & 2) != 2)
+    return 4;
+  return 0;
+}
+
+static int radio_init_pending_table() {
+  int retval;
+  // AUTOPEND | SRC_MATCH_EN
+  SRCMATCH |= 3;
+  retval = radio_check_filtering();
+  if (retval != 0)
+    return retval;
+  SRCSHORTEN0 = 0;
+  SRCSHORTEN1 = 0;
+  SRCSHORTEN2 = 0;
+  SRCSHORTPENDEN0 = 0;
+  SRCSHORTPENDEN1 = 0;
+  SRCSHORTPENDEN2 = 0;
+  SRCEXTEN0 = 0;
+  SRCEXTEN1 = 0;
+  SRCEXTEN2 = 0;
+  SRCEXTPENDEN0 = 0;
+  SRCEXTPENDEN1 = 0;
+  SRCEXTPENDEN2 = 0;
+  return 0;
+}
+
+
+static int radio_pend_set_ext(unsigned int index, const uint8_t *extaddr,
+                       size_t extaddr_len) {
+  uint8_t set, clear;
+  unsigned int table_index;
+  if (index >= 8)
+    return 1;
+  if (extaddr_len != 0 && extaddr_len != 8)
+    return 2;
+  set = (1 << index);
+  clear = ~set;
+  // Clear bits, before writing
+  SRCEXTEN0 &= clear;
+  SRCEXTPENDEN0 &= clear;
+  // If we're unsetting, just stop now, no need to
+  if (extaddr_len == 0) {
+    return 0;
+  }
+  table_index = (index * 8);
+  while (extaddr_len--) {
+    (&SRC_ADDR_TABLE)[table_index++] = *(extaddr++);
+  }
+  // Now set them on the table again.
+  SRCEXTPENDEN0 |= set;
+  SRCEXTEN0 |= set;
+  return 0;
+}
+
+static int radio_pend_set_short(unsigned int index, const uint8_t *shortaddr,
+                         size_t shortaddr_len) {
+  uint8_t set, clear;
+  unsigned int table_index;
+  if (index >= 8)
+    return 1;
+  if (shortaddr_len != 0 && shortaddr_len != 4)
+    return 2;
+  set = (1 << index);
+  clear = ~set;
+  // Clear bits, before writing
+  SRCSHORTEN2 &= clear;
+  SRCSHORTPENDEN2 &= clear;
+  // If we're unsetting, just stop now, no need to
+  if (shortaddr_len == 0) {
+    return 0;
+  }
+  table_index = (8 * 8) + (index * 4);
+  while (shortaddr_len--) {
+    (&SRC_ADDR_TABLE)[table_index++] = *(shortaddr++);
+  }
+  // Now set them on the table again.
+  SRCSHORTPENDEN2 |= set;
+  SRCSHORTEN2 |= set;
+  return 0;
+}
+
+static void commands_handle_radio_set_pending(size_t request_id, const uint8_t *data,
+                                       size_t data_len) {
+  uint8_t index;
+  if (data_len < 1) {
+    commands_send_err(request_id, NULL, 0);
+    return;
+  }
+  index = data[0];
+  if (index & 0x80) {
+    commands_send_ok_int(
+        request_id, radio_pend_set_ext(index & 0x7F, &data[1], data_len - 1));
+  } else {
+    commands_send_ok_int(
+        request_id, radio_pend_set_short(index & 0x7F, &data[1], data_len - 1));
+  }
+}
+
 void commands_handle_command(command_t cmd, size_t request_id,
                              const uint8_t *data, size_t data_len) {
   switch (cmd) {
@@ -98,6 +204,12 @@ void commands_handle_command(command_t cmd, size_t request_id,
     break;
   case Command_Request_Radio_SetObject:
     commands_handle_radio_set_object(request_id, data, data_len);
+    break;
+  case Command_Request_Radio_InitPendingTable:
+    commands_send_ok_int(request_id, radio_init_pending_table());
+    break;
+  case Command_Request_Radio_SetPending:
+    commands_handle_radio_set_pending(request_id, data, data_len);
     break;
   default:
     commands_send_err(request_id, NULL, 0);

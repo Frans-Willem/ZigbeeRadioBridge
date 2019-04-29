@@ -15,6 +15,8 @@ typedef enum {
   Command_Request_Radio_SetValue,
   Command_Request_Radio_GetObject,
   Command_Request_Radio_SetObject,
+  Command_Request_Radio_InitPendingTable,
+  Command_Request_Radio_SetPending,
   /**
    * These are sent from Dongle -> PC
    * Err is usually a protocol error, while OK may still contain a non-OK return
