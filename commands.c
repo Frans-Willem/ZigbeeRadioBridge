@@ -10,7 +10,7 @@ static void commands_handle_radio_get_value(size_t request_id,
   uint8_t serialized_response[4];
   result = NETSTACK_RADIO.get_value(param, &value);
   serialize_int(result, &serialized_response[0], 2);
-  serialize_int(result, &serialized_response[2], 2);
+  serialize_int(value, &serialized_response[2], 2);
   commands_send_ok(request_id, serialized_response,
                    sizeof(serialized_response));
 }
